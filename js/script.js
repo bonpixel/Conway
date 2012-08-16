@@ -13,7 +13,7 @@
 		j = 0,
 		xpos = 0,
 		ypos = 0,
-		cellSize = 10,
+		cellSize = 5,
 		on,
 		off,
 		numCells,
@@ -27,21 +27,23 @@
 
 
 	canvasr.init = function(){
-		// for (i = 0; i < myCanvas.height; ++i){
-		// 	ypos = i*cellSize;
+		for (i = 0; i < myCanvas.height; ++i){
+			ypos = i*cellSize;
 
-		// 	for (j = 0; j < myCanvas.width; ++j){
-		// 		xpos = j*cellSize;
+			for (j = 0; j < myCanvas.width; ++j){
+				xpos = j*cellSize;
+				ctx.fillStyle = on;
+				ctx.strokeRect (xpos, ypos, cellSize, cellSize);
 
-		// 		if( j%2 + i%2 === 1 ){
-		// 			ctx.fillStyle = off;
-		// 			ctx.fillRect (xpos, ypos, cellSize, cellSize);
-		// 		}else{
-		// 			ctx.fillStyle = on;
-		// 			ctx.fillRect (xpos, ypos, cellSize, cellSize);
-		// 		}
-		// 	}
-		// }
+				// if( j%2 + i%2 === 1 ){
+				// 	ctx.fillStyle = off;
+				// 	ctx.fillRect (xpos, ypos, cellSize, cellSize);
+				// }else{
+				// 	ctx.fillStyle = on;
+				// 	ctx.strokeRect (xpos, ypos, cellSize, cellSize);
+				// }
+			}
+		}
 
 
 		// aliveCells = getCells();
@@ -67,7 +69,7 @@
 			++i;
 		}
 
-		console.dir(masterArray);
+		// console.dir(masterArray);
 			// cellArr[i].xcoord = (Math.floor((Math.random()*columns)+1)) * cellSize;
 			// cellArr[i].ycoord = (Math.floor((Math.random()*rows)+1)) * cellSize;
 
@@ -78,9 +80,31 @@
 
 	canvasr.runLife = function(){
 		ctx.clearRect(0,0,myCanvas.width,myCanvas.height);
+		console.dir(masterArray);
 		aliveCells = getCells();
+		drawGrid();
 		drawCanvas( aliveCells );
 	};
+
+	function drawGrid(){
+		for (i = 0; i < myCanvas.height; ++i){
+			ypos = i*cellSize;
+
+			for (j = 0; j < myCanvas.width; ++j){
+				xpos = j*cellSize;
+				ctx.fillStyle = on;
+				ctx.strokeRect (xpos, ypos, cellSize, cellSize);
+
+				// if( j%2 + i%2 === 1 ){
+				// 	ctx.fillStyle = off;
+				// 	ctx.fillRect (xpos, ypos, cellSize, cellSize);
+				// }else{
+				// 	ctx.fillStyle = on;
+				// 	ctx.strokeRect (xpos, ypos, cellSize, cellSize);
+				// }
+			}
+		}
+	}
 
 	function drawCanvas(cellsToDraw){
 		for(i = 0; i < cellsToDraw.length; ++i){
@@ -89,29 +113,51 @@
 		}
 	}
 
+	function resetArray(mArr){
+		var i = 0;
+		var j = 0;
+		columns = mArr.length;
+		rows = mArr[0].length;
+
+		while(i < columns) {
+			mArr[i] = [];
+			while(j < rows) {
+				mArr[i][j] = {
+					xcoord:0,
+					ycoord:0,
+					alive:0
+				};
+				++j;
+			}
+			j = 0;
+			++i;
+		}
+		return mArr;
+	}
+
 	function getCells(){
 		var cellArr = [];
 		var columns = myCanvas.width/cellSize;
 		var rows = myCanvas.height/cellSize;
 		var rolled = [[]];
 
-		for ( i = 0; i < 50; ++i){
+		for ( i = 0; i < 200; ++i){
 			cellArr[i] = {};
-			col = (Math.floor((Math.random()*columns)+1));
-			row = (Math.floor((Math.random()*rows)+1));
+			col = (Math.floor((Math.random()*columns)));
+			row = (Math.floor((Math.random()*rows)));
 
-			console.dir(masterArray);
-
-			while(masterArray[row][col]){
-				col = (Math.floor((Math.random()*columns)+1));
-				row = (Math.floor((Math.random()*rows)+1));
+			// make sure we dont duplicate an alive cell
+			while(masterArray[col][row].alive){
+				col = (Math.floor((Math.random()*columns)));
+				row = (Math.floor((Math.random()*rows)));
 			}
 
 			cellArr[i].xcoord = col * cellSize;
 			cellArr[i].ycoord = row * cellSize;
-			masterArray[col][row] = true;
-			
+			masterArray[col][row].alive = true;
 		}
+		console.log(masterArray, 'masterArray');
+		masterArray = resetArray(masterArray);
 		return cellArr;
 	}
 
@@ -178,13 +224,15 @@
 
 		
 
-		if (cellposition){
+		if (near < 2){
 
-		}else if(cellposition){
+		}else if(near >= 2 && near <= 3){
 
-		}else if(cellposition){
+		}else if(naer > 3){
 
-		}else if(cellposition){}
+		}else if(near == 3 && dead){
+
+		}
 
 
 
